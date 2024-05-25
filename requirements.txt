@@ -1,0 +1,5 @@
+python-dotenv
+bitso-py
+pyyaml
+pyarrow
+pandas
