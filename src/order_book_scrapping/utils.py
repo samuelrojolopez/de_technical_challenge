@@ -63,9 +63,8 @@ class OrderBook:
                 ask=best_ask,
                 spread=spread
             )
-         except Exception as e:
+        except Exception as e:
             raise Exception(e)
-
 
     def get_book_order_spread_record(self, book_name: str):
         order_book = self.extract_order_book(book_name=book_name)
@@ -119,7 +118,7 @@ class OrderBook:
             logger.error("Save file {file_name} FAILED.")
 
     @staticmethod
-    def cast_payload(dataframe: pd.DataFrame)
+    def cast_payload(dataframe: pd.DataFrame):
         try:
             dataframe[['orderbook_timestamp', 'book']] = dataframe[['orderbook_timestamp', 'book']].astype(str)
             dataframe[['bid', 'ask', 'spread']] = dataframe[['bid', 'ask', 'spread']].astype(float)
