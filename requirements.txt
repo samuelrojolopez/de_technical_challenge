@@ -3,3 +3,4 @@ bitso-py
 pyyaml
 pyarrow
 pandas
+pytest
