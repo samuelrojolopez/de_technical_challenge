@@ -52,17 +52,20 @@ class OrderBook:
         }
 
     def compute_spread_from_order_book(self, book_name: str, order_book):
-        best_bid = max(order_book.bids, key=lambda x: x.price).price
-        best_ask = min(order_book.asks, key=lambda x: x.price).price
-        spread = ((best_ask - best_bid) * 100) / best_ask
+        try:
+            best_bid = max(order_book.bids, key=lambda x: x.price).price
+            best_ask = min(order_book.asks, key=lambda x: x.price).price
+            spread = ((best_ask - best_bid) * 100) / best_ask
+            return self.spread_record_format(
+                orderbook_timestamp=order_book.updated_at,
+                book=book_name,
+                bid=best_bid,
+                ask=best_ask,
+                spread=spread
+            )
+         except Exception as e:
+            raise Exception(e)
 
-        return self.spread_record_format(
-            orderbook_timestamp=order_book.updated_at,
-            book=book_name,
-            bid=best_bid,
-            ask=best_ask,
-            spread=spread
-        )
 
     def get_book_order_spread_record(self, book_name: str):
         order_book = self.extract_order_book(book_name=book_name)
@@ -74,7 +77,7 @@ class OrderBook:
 
     def save_records(self, payload, order_book_name: str):
         if not payload:
-            return
+            raise Exception("Payload to be saved is empty, validate API extractions.")
 
         # Generate output directory
         base_dir = os.path.join(
@@ -107,13 +110,20 @@ class OrderBook:
         file_path = os.path.join(minute_bucket_dir, file_name)
 
         # Generate Dataframe, cast and save as parquet
-        df = pd.DataFrame(payload)
-        cast_df = self.cast_payload(dataframe=df)
-        cast_df.to_parquet(file_path)
-        logging.info(f"Records saved in: {file_path}")
+        try:
+            df = pd.DataFrame(payload)
+            cast_df = self.cast_payload(dataframe=df)
+            cast_df.to_parquet(file_path)
+            logging.info(f"Records saved in: {file_path}")
+        except Exception as e:
+            logger.error("Save file {file_name} FAILED.")
 
     @staticmethod
-    def cast_payload(dataframe: pd.DataFrame):
-        dataframe[['orderbook_timestamp', 'book']] = dataframe[['orderbook_timestamp', 'book']].astype(str)
-        dataframe[['bid', 'ask', 'spread']] = dataframe[['bid', 'ask', 'spread']].astype(float)
+    def cast_payload(dataframe: pd.DataFrame)
+        try:
+            dataframe[['orderbook_timestamp', 'book']] = dataframe[['orderbook_timestamp', 'book']].astype(str)
+            dataframe[['bid', 'ask', 'spread']] = dataframe[['bid', 'ask', 'spread']].astype(float)
+        except:
+            logger.error("Unable to apply casting as expected, schema changed.")
+            raise Exception("Casting Failed, possible change on schema.")
         return dataframe
