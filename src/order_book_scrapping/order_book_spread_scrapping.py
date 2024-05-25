@@ -5,7 +5,7 @@ from utils import OrderBook
 
 
 def main(order_book_name):
-    order_book_name = order_book_name
+    order_book_name = str(order_book_name[0])
     records = []
     bucket_interval = (datetime.now().minute // 10) * 10
     order_book = OrderBook()
