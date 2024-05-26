@@ -1,4 +1,7 @@
 deposits_source_path: "input_data/deposit_sample_data.csv"
 withdrawals_source_path: "input_data/withdrawals_sample_data.csv"
+event_source_path: "input_data/event_sample_data.csv"
 movements_table_output_path: "./outputs/warehouse_models/movements_model/"
-output_table_name: "movements_model"
+user_login_events_table_output_path: "./outputs/warehouse_models/user_login_events_model/"
+movements_output_table_name: "movements_model"
+user_login_events_output_table_name: "user_login_events_model"
