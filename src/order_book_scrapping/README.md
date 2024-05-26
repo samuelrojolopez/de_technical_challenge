@@ -27,9 +27,21 @@ Having a file that stores at most a record per second in 10 minutes intervals ca
 spread will be by book_name and latest's book_order spread values.
 
 The partition selected by the book_order created_at truncated in a 10 minutes window allows us to not have "useless"
-partitions of minutes or seconds (when the data extraction required won't have a physicall improvement to filter by that
+partitions of minutes or seconds (when the data extraction required won't have a physical improvement to filter by that
 granularity). But it's important to mention why not to stop at hour partition; the 10 minutes bucket partition is
 selected because filters at second granularity will require to scan partitions of 6 files of at most 600 records, 
 which are "only" 3600 records, but the I/O of scanning all 6 files when we know the second, and thus the minute detail
 can allow us to jump directly into the 10 minutes bucket file, which can be previously identified by the partitioned location
 in a 10 minutes bucket.
+
+This partition strategy will probably allow a faster file query for specific record consults, with a custom solution for 
+this custom partition definition, but an increased time of listing and reading files for aggregations, which a 
+downstream process could take care for a better aggregated layer after this scrapped layer in the data lake. 
+
+### Additional Consideration
+
+A better approach for this solution is planned adding a new columns in this process or a downstream pipeline
+(breaking the schema constraint in the requirement), adding a date and timestamp fields, in order to allow date 
+partition by day and if required, clustering by timestamp, knowing we will have at most one record per second.
+
+This solution will also allow us to exploit built-in features in Warehousing engines.
