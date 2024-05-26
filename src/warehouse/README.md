@@ -14,7 +14,7 @@ a more complex model could bring a lot of benefits doing a relational model and 
 approach where is not required or useful at all.
 
 
-
+![alt text](https://github.com/samuelrojolopez/de_technical_challenge/blob/main/src/warehouse/movements_erd.png?raw=true)
 
 
 
