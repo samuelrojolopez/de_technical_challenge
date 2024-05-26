@@ -21,7 +21,6 @@ def deposits_df():
         'amount': [5240.02914542, 0.15, 0.01, 224827.14518, 1559177.0700000001],
         'currency': ["usd", "btc", "btc", "brl", "ars"],
         'status': ["complete", "complete", "complete", "complete", "complete"],
-        'action': ["deposit", "deposit", "deposit", "deposit", "deposit"],
         'interface': [None, None, None, None, None]
     })
 
@@ -38,8 +37,7 @@ def withdrawals_df():
         'amount': [10.0, 5.0, 10.0, 201.0, 123.0],
         'interface': ['web', 'web', 'web', 'web', 'web'],
         'currency': ['mxn', 'brl', 'mxn', 'mxn', 'brl'],
-        'status': ['complete', 'complete', 'complete', 'complete', 'complete'],
-        'action': ['withdrawal', 'withdrawal', 'withdrawal', 'withdrawal', 'withdrawal']
+        'status': ['complete', 'complete', 'complete', 'complete', 'complete']
     })
 
 
@@ -55,7 +53,7 @@ def test_standardize_fields_naming_deposits(deposits_df):
     assert 'action' in standardized_df.columns
     assert standardized_df['action'].unique() == ['test_action']
     assert list(standardized_df.columns) == [
-        'event_id', 'event_timestamp', 'user', 'amount', 'currency', 'status', 'action', 'interface'
+        'event_id', 'event_timestamp', 'user', 'amount', 'currency', 'status', 'interface', 'action'
     ]
 
 
@@ -70,8 +68,9 @@ def test_standardize_fields_naming_withdrawals(withdrawals_df):
 
 
 def test_add_action_and_interface_deposits(deposits_df):
+    standardized_df = WarehouseMovementsModel.standardize_fields_naming(deposits_df, 'test_action')
     augmented_df = WarehouseMovementsModel.add_action_and_interface(
-        deposits_df, 'test_action', 'test_interface'
+        standardized_df, 'test_action', 'test_interface'
     )
     assert 'action' in augmented_df.columns
     assert 'interface' in augmented_df.columns
