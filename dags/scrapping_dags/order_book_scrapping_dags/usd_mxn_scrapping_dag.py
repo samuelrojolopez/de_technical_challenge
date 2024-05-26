@@ -42,13 +42,13 @@ def run_script(arg_order_book_name):
 
 
 dag = DAG(
-    'btc_mxn_order_book_spread_pipeline',
+    'usd_mxn_order_book_spread_pipeline',
     default_args=default_args,
-    description='BTC_MXN Spread scrapping and Storage Pipeline',
+    description='USD_MXN Spread scrapping and Storage Pipeline',
     schedule_interval=None,  # Run manually
 )
 
-order_book_name = 'btc_mxn'  # Replace with the desired order book name
+order_book_name = 'usd_mxn'  # Replace with the desired order book name
 
 process_order_book_task = PythonOperator(
     task_id='process_order_book_task',
