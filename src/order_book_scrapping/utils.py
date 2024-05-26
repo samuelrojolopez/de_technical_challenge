@@ -1,10 +1,7 @@
 import os
-import json
-
-import pandas as pd
 import yaml
 import bitso
-import pandas
+import pandas as pd
 import logging
 from datetime import datetime
 from dotenv import load_dotenv
@@ -26,14 +23,19 @@ class OrderBook:
         load_dotenv()
         bitso_key = os.getenv('BITSO_API_KEY')
         bitso_secret = os.getenv('BITSO_API_SECRET')
+
+        if bitso_key is None or bitso_secret is None:
+            raise Exception("Bitso API environmental variables not found.")
         # Generate API instance
         self.api = bitso.Api(bitso_key, bitso_secret)
         # Load the config.yaml file
         self.configs = load_config()
 
     def extract_order_book(self, book_name: str):
-        logging.debug(f"Making {book_name} api call...")
-        return self.api.order_book(book_name)
+        try:
+            return self.api.order_book(book_name)
+        except Exception as e:
+            raise Exception(e)
 
     @staticmethod
     def spread_record_format(
@@ -68,7 +70,6 @@ class OrderBook:
 
     def get_book_order_spread_record(self, book_name: str):
         order_book = self.extract_order_book(book_name=book_name)
-        logging.debug("Parsing order book response...")
         order_book_date = order_book.updated_at
         spread_record = self.compute_spread_from_order_book(book_name=book_name, order_book=order_book)
         logging.info(f"Order book {book_name} extracted")
@@ -116,13 +117,15 @@ class OrderBook:
             logging.info(f"Records saved in: {file_path}")
         except Exception as e:
             logger.error("Save file {file_name} FAILED.")
+            raise Exception(e)
 
     @staticmethod
     def cast_payload(dataframe: pd.DataFrame):
         try:
             dataframe[['orderbook_timestamp', 'book']] = dataframe[['orderbook_timestamp', 'book']].astype(str)
             dataframe[['bid', 'ask', 'spread']] = dataframe[['bid', 'ask', 'spread']].astype(float)
-        except:
+        except Exception as e:
+            logger.error(e)
             logger.error("Unable to apply casting as expected, schema changed.")
             raise Exception("Casting Failed, possible change on schema.")
         return dataframe
