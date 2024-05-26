@@ -1,0 +1,4 @@
+deposits_source_path: "input_data/deposit_sample_data.csv"
+withdrawals_source_path: "input_data/withdrawals_sample_data.csv"
+movements_table_output_path: "./outputs/warehouse_models/movements_model/"
+output_table_name: "movements_model"
