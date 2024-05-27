@@ -1,9 +1,9 @@
 import glob
 import importlib.util
 import os
-from airflow.utils.dag_cycle_tester import test_cycle as _test_cycle
+#from airflow.utils.dag_cycle_tester import test_cycle as _test_cycle # Issue with local airflow sqlite on Windows
 import pytest
-from airflow.models import DAG
+#from airflow.models import DAG
 
 DAG_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "dags/**/*.py")
 DAG_FILES = glob.glob(DAG_PATH,recursive=True)
