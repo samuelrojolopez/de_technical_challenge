@@ -17,7 +17,13 @@ default_args = {
 
 def run_script():
     script_path = '/opt/airflow/src/warehouse/warehouse_user_login_events_model.py'
-    subprocess.run(['python3', script_path])    sys.path.insert(0, '/path/to/your/script')
+
+    subprocess.run(
+        ['python', script_path],
+        check=True,
+        capture_output=True,
+        text=True
+    )
 
 
 dag = DAG(
@@ -25,11 +31,12 @@ dag = DAG(
     default_args=default_args,
     description='Warehouse User Login Events Table Model Pipeline',
     schedule_interval=timedelta(days=1),
+    catchup=False
 )
 
 user_login_events_model_task = PythonOperator(
     task_id='warehouse_user_login_events_model',
     python_callable=run_script,
-    dag=dag,
+    dag=dag
 )
 
